@@ -2,7 +2,9 @@ package me.camdenorrb.jcommons.utils;
 
 import com.google.gson.Gson;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -16,9 +18,12 @@ public final class GsonUtils {
 
 		if (!file.exists()) {
 
-			file.getParentFile().mkdirs();
-
+			final File parentFile = file.getParentFile();
 			final T defaultValue = defaultValueBlock.get();
+
+			if (parentFile != null) {
+				parentFile.mkdirs();
+			}
 
 			TryUtils.attemptOrPrintErr(() -> new FileWriter(file), (writer) ->
 				gson.toJson(defaultValue, writer)
